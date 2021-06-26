@@ -2,4 +2,7 @@ rootProject.name = 'inMoongram'
 include 'repository'
 include 'service'
 include 'api'
+include 'api'
+include 'service'
+include 'repository'
 

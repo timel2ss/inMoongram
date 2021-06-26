@@ -1,4 +1,5 @@
 buildscript {
+    apply plugin: 'java'
     ext {
         springBootVersion = '2.5.2'
     }
@@ -21,7 +22,7 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
-    sourceCompatibility = 1.11
+    sourceCompatibility = 11
 
     repositories {
         mavenCentral()
@@ -37,12 +38,12 @@ subprojects {
 
 project(':api') {
     dependencies {
-        compile project(':service')
+        implementation(project(':service'))
     }
 }
 
 project(':service') {
     dependencies {
-        compile project(':repository')
+        implementation(project(':repository'))
     }
 }
