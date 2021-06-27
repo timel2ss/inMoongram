@@ -17,13 +17,11 @@ public class Follow {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "follower_id", referencedColumnName = "user_id")
     private User follower;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "followee_id", referencedColumnName = "user_id")
     private User followee;
 
     @Builder
@@ -35,6 +33,7 @@ public class Follow {
 
     private void setFollow(User follower, User followee){
         follower.getFollowees().add(this);
-        followee.getFollowings().add(this);
+        followee.getFollowers().add(this);
+        //
     }
 }

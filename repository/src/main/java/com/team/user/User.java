@@ -41,11 +41,13 @@ public class User {
     @Column(name = "profile_image")
     private String profileImage;
 
+    // 사용자를 팔로우 하는 사람들
     @OneToMany(mappedBy = "follower")
-    private List<Follow> Followings = new ArrayList<>();
+    private List<Follow> followers = new ArrayList<>();
 
+    // 사용자가 팔로우 하는 사람들
     @OneToMany(mappedBy = "followee")
-    private List<Follow> Followees = new ArrayList<>();
+    private List<Follow> followees = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String nickname, String name,
@@ -62,6 +64,3 @@ public class User {
     }
 }
 
-enum Sex{
-    MALE,FEMALE,NONE
-}
