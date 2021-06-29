@@ -1,5 +1,6 @@
 package com.team.user;
 
+import com.team.user.dto.FollowListDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,12 +19,18 @@ class FollowServiceTest {
     @Mock
     private FollowRepository followRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private FollowService followService;
 
     private User user1;
     private User user2;
-    private Follow follow;
+    private User user3;
+
+    private Follow follow1;
+    private Follow follow2;
 
     @BeforeEach
     void setUp() {
@@ -39,19 +46,44 @@ class FollowServiceTest {
                 .email("test2@test.com")
                 .password("testPassword2")
                 .build();
-        follow = Follow.builder()
+        user3 = User.builder()
+                .name("testUser3")
+                .nickname("testNickname3")
+                .email("test3@test.com")
+                .password("testPassword3")
+                .build();
+
+        follow1 = Follow.builder()
                 .follower(user1)
                 .followee(user2)
+                .build();
+        follow2 = Follow.builder()
+                .follower(user1)
+                .followee(user3)
                 .build();
     }
 
     @Test
     void 팔로우_취소() {
-        given(followRepository.findByFollowerAndFollowee(any(), any())).willReturn(Optional.of(follow));
+        given(followRepository.findByFollowerAndFollowee(any(), any())).willReturn(Optional.of(follow1));
         int followerCount = user1.getFollowees().size();
         int followeeCount = user2.getFollowers().size();
         followService.unfollow(user1, user2);
-        assertThat(user1.getFollowers().size()).isEqualTo(followerCount - 1);
+        assertThat(user1.getFollowees().size()).isEqualTo(followerCount - 1);
         assertThat(user2.getFollowers().size()).isEqualTo(followeeCount - 1);
+    }
+
+    @Test
+    void 팔로우_목록_조회() {
+        given(userRepository.findById(any())).willReturn(Optional.of(user1));
+        FollowListDto.Request requestDto = new FollowListDto.Request(1L);
+        FollowListDto.Response followList = followService.getFollowList(requestDto);
+
+        assertThat(followList.getUsers().size()).isEqualTo(2);
+        assertThat(followList.getUsers().get(0).getName()).isEqualTo(user2.getName());
+        assertThat(followList.getUsers().get(0).getNickname()).isEqualTo(user2.getNickname());
+        assertThat(followList.getUsers().get(1).getName()).isEqualTo(user3.getName());
+        assertThat(followList.getUsers().get(1).getNickname()).isEqualTo(user3.getNickname());
+//        assertThat(followList.getHashtags().size()).isEqualTo(1);
     }
 }
