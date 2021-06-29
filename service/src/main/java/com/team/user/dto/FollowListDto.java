@@ -23,12 +23,14 @@ public class FollowListDto {
         private List<UserInfo> users;
         private List<HashtagInfo> hashtags;
 
+        @Getter
         @AllArgsConstructor
         public static class UserInfo {
             private String name;
             private String nickname;
         }
 
+        @Getter
         @AllArgsConstructor
         public static class HashtagInfo {
             private String hashtag;

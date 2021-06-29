@@ -34,10 +34,10 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .name("testUser")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .password("testPassword")
+                .name("testUser1")
+                .nickname("testNickname1")
+                .email("test1@test.com")
+                .password("testPassword1")
                 .build();
         user2 = User.builder()
                 .name("testUser2")
@@ -70,6 +70,10 @@ class UserServiceTest {
         FollowListDto.Response followList = userService.getFollowList(requestDto);
 
         assertThat(followList.getUsers().size()).isEqualTo(2);
+        assertThat(followList.getUsers().get(0).getName()).isEqualTo(user2.getName());
+        assertThat(followList.getUsers().get(0).getNickname()).isEqualTo(user2.getNickname());
+        assertThat(followList.getUsers().get(1).getName()).isEqualTo(user3.getName());
+        assertThat(followList.getUsers().get(1).getNickname()).isEqualTo(user3.getNickname());
 //        assertThat(followList.getHashtags().size()).isEqualTo(1);
     }
 

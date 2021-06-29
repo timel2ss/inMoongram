@@ -18,7 +18,7 @@ public class UserService {
         List<Follow> followees = user.getFollowees();
 
         List<FollowListDto.Response.UserInfo> userInfos = followees.stream()
-                .map(Follow::getFollower)
+                .map(Follow::getFollowee)
                 .map(followUser -> new FollowListDto.Response.UserInfo(followUser.getName(), followUser.getNickname()))
                 .collect(Collectors.toCollection(LinkedList::new));
 
