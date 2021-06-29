@@ -3,6 +3,7 @@ package com.team.user;
 import com.team.user.dto.FollowListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,9 +11,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public FollowListDto.Response getFollowList(FollowListDto.Request requestDto) {
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
         List<Follow> followees = user.getFollowees();
