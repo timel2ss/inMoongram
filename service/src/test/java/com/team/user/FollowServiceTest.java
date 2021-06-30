@@ -20,7 +20,7 @@ class FollowServiceTest {
     private FollowRepository followRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     @InjectMocks
     private FollowService followService;
@@ -65,17 +65,24 @@ class FollowServiceTest {
 
     @Test
     void 팔로우_취소() {
-        given(followRepository.findByFollowerAndFollowee(any(), any())).willReturn(Optional.of(follow1));
+        given(followRepository.findByFollower_IdAndFollowee_Id(any(), any())).willReturn(Optional.of(follow1));
+        given(userService.findOne(1L)).willReturn(user1);
+        given(userService.findOne(2L)).willReturn(user2);
+
         int followerCount = user1.getFollowees().size();
         int followeeCount = user2.getFollowers().size();
-        followService.unfollow(user1, user2);
+        long followerId = 1L;
+        long followeeId = 2L;
+
+        followService.unfollow(followerId, followeeId);
+
         assertThat(user1.getFollowees().size()).isEqualTo(followerCount - 1);
         assertThat(user2.getFollowers().size()).isEqualTo(followeeCount - 1);
     }
 
     @Test
     void 팔로우_목록_조회() {
-        given(userRepository.findById(any())).willReturn(Optional.of(user1));
+        given(userService.findOne(any())).willReturn(user1);
         FollowListDto.Request requestDto = new FollowListDto.Request(1L);
         FollowListDto.Response followList = followService.getFollowList(requestDto);
 

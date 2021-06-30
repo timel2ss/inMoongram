@@ -14,18 +14,21 @@ import java.util.stream.Collectors;
 @Transactional
 public class FollowService {
     private final FollowRepository followRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public void unfollow(User user, User target) {
-        Follow follow = followRepository.findByFollowerAndFollowee(user, target)
+    public void unfollow(Long userId, Long targetId) {
+        Follow follow = followRepository.findByFollower_IdAndFollowee_Id(userId, targetId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저와 팔로우가 되어 있지 않습니다."));
+        User user = userService.findOne(userId);
+        User target = userService.findOne(targetId);
+
         user.getFollowees().remove(follow);
         target.getFollowers().remove(follow);
     }
 
     @Transactional(readOnly = true)
     public FollowListDto.Response getFollowList(FollowListDto.Request requestDto) {
-        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+        User user = userService.findOne(requestDto.getUserId());
         List<Follow> followees = user.getFollowees();
 
         List<FollowListDto.Response.UserInfo> userInfos = followees.stream()

@@ -44,7 +44,7 @@ class FollowRepositoryTest {
         User saveUser1 = userRepository.save(user1);
         User saveUser2 = userRepository.save(user2);
         Follow saveFollow = followRepository.save(follow);
-        Follow findOne = followRepository.findByFollowerAndFollowee(saveUser1, saveUser2)
+        Follow findOne = followRepository.findByFollower_IdAndFollowee_Id(saveUser1.getId(), saveUser2.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저와 팔로우가 되어 있지 않습니다."));
         assertThat(findOne).isEqualTo(follow);
         assertThat(findOne.getFollower()).isEqualTo(saveFollow.getFollower());
