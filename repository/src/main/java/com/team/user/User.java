@@ -42,11 +42,11 @@ public class User {
     private String profileImage;
 
     // 사용자를 팔로우 하는 사람들
-    @OneToMany(mappedBy = "follower")
+    @OneToMany(mappedBy = "followee")
     private List<Follow> followers = new ArrayList<>();
 
     // 사용자가 팔로우 하는 사람들
-    @OneToMany(mappedBy = "followee")
+    @OneToMany(mappedBy = "follower")
     private List<Follow> followees = new ArrayList<>();
 
     @Builder
