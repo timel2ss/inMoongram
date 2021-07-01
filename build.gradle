@@ -19,6 +19,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
@@ -38,12 +39,12 @@ subprojects {
 
 project(':api') {
     dependencies {
-        implementation(project(':service'))
+        api(project(':service'))
     }
 }
 
 project(':service') {
     dependencies {
-        implementation(project(':repository'))
+        api(project(':repository'))
     }
 }
