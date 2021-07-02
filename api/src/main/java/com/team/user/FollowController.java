@@ -17,7 +17,7 @@ public class FollowController {
     @DeleteMapping("/{follow_id}/unfollow")
     public ResponseEntity<Void> unfollow(@PathVariable("follow_id") Long followId) {
         followService.unfollow(followId);
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
     }
 }

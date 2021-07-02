@@ -1,7 +1,7 @@
 package com.team.user;
 
-import com.team.user.dbutil.DatabaseCleanup;
-import com.team.user.dbutil.DatabaseInsert;
+import com.team.dbutil.DatabaseCleanup;
+import com.team.dbutil.DatabaseInsert;
 import com.team.user.dto.FollowListDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,20 +67,17 @@ class UserControllerTest {
 
     @Test
     void 팔로우_목록_조회() {
-        FollowListDto.Request request = new FollowListDto.Request(user1.getNickname());
-
-        FollowListDto.Response response =
+        FollowListDto response =
                 given()
                     .port(port)
                     .accept("application/json")
                     .contentType("application/json")
-                    .body(request)
                 .when()
-                    .get(user1.getNickname() + "/following")
+                    .get("user/" + user1.getId() + "/following")
                 .then()
                     .statusCode(200)
                     .extract()
-                    .as(FollowListDto.Response.class);
+                    .as(FollowListDto.class);
 
         assertThat(response.getUsers().size()).isEqualTo(2);
         assertThat(response.getUsers().get(0).getName()).isEqualTo(user2.getName());

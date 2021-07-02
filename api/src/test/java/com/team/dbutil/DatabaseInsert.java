@@ -1,4 +1,4 @@
-package com.team.user.dbutil;
+package com.team.dbutil;
 
 import com.team.user.Follow;
 import com.team.user.User;

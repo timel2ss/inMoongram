@@ -28,15 +28,21 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public FollowListDto.Response getFollowList(FollowListDto.Request requestDto) {
-        User user = userService.findByNickname(requestDto.getNickname());
+    public FollowListDto getFollowList(Long userId) {
+        User user = userService.findById(userId);
         List<Follow> followees = user.getFollowees();
 
-        List<FollowListDto.Response.UserInfo> userInfos = followees.stream()
-                .map(follow -> new FollowListDto.Response.UserInfo(follow.getFollowee().getName(), follow.getFollowee().getNickname(), follow.getId()))
+        List<FollowListDto.UserInfo> userInfos = followees.stream()
+                .map(follow -> FollowListDto.UserInfo.builder()
+                        .userId(follow.getFollowee().getId())
+                        .name(follow.getFollowee().getName())
+                        .nickname(follow.getFollowee().getNickname())
+                        .profileImage(follow.getFollowee().getProfileImage())
+                        .followId(follow.getId())
+                        .build())
                 .collect(Collectors.toCollection(LinkedList::new));
 
 //        TODO: add hashtag info
-        return new FollowListDto.Response(userInfos, null);
+        return new FollowListDto(userInfos, null);
     }
 }

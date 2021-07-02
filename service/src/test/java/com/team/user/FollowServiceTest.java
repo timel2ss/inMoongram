@@ -80,9 +80,8 @@ class FollowServiceTest {
 
     @Test
     void 팔로우_목록_조회() {
-        given(userService.findByNickname(any())).willReturn(user1);
-        FollowListDto.Request requestDto = new FollowListDto.Request(user1.getNickname());
-        FollowListDto.Response followList = followService.getFollowList(requestDto);
+        given(userService.findById(any())).willReturn(user1);
+        FollowListDto followList = followService.getFollowList(1L);
 
         assertThat(followList.getUsers().size()).isEqualTo(2);
         assertThat(followList.getUsers().get(0).getName()).isEqualTo(user2.getName());

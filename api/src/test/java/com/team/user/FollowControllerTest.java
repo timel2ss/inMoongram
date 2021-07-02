@@ -1,7 +1,7 @@
 package com.team.user;
 
-import com.team.user.dbutil.DatabaseCleanup;
-import com.team.user.dbutil.DatabaseInsert;
+import com.team.dbutil.DatabaseCleanup;
+import com.team.dbutil.DatabaseInsert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FollowControllerTest {
@@ -63,6 +62,6 @@ class FollowControllerTest {
         .when()
             .delete( "follow/" + follow1.getId() + "/unfollow")
         .then()
-            .statusCode(200);
+            .statusCode(204);
     }
 }
