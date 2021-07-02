@@ -1,7 +1,7 @@
 package com.team.user;
 
-import com.team.dbutil.DatabaseCleanup;
-import com.team.dbutil.DatabaseInsert;
+import com.team.user.dbutil.DatabaseCleanup;
+import com.team.user.dbutil.DatabaseInsert;
 import com.team.user.dto.FollowListDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
