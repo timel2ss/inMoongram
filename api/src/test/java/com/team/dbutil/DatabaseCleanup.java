@@ -1,4 +1,4 @@
-package com.team.user.dbutil;
+package com.team.dbutil;
 
 import com.google.common.base.CaseFormat;
 import org.springframework.stereotype.Component;
