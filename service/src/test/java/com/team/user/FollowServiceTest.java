@@ -65,16 +65,14 @@ class FollowServiceTest {
 
     @Test
     void 팔로우_취소() {
-        given(followRepository.findByFollower_IdAndFollowee_Id(any(), any())).willReturn(Optional.of(follow1));
-        given(userService.findOne(1L)).willReturn(user1);
-        given(userService.findOne(2L)).willReturn(user2);
+        given(userService.findByNickname(user1.getNickname())).willReturn(user1);
+        given(userService.findByNickname(user2.getNickname())).willReturn(user2);
+        given(followRepository.findById(any())).willReturn(Optional.of(follow1));
 
         int followerCount = user1.getFollowees().size();
         int followeeCount = user2.getFollowers().size();
-        long followerId = 1L;
-        long followeeId = 2L;
 
-        followService.unfollow(followerId, followeeId);
+        followService.unfollow(1L);
 
         assertThat(user1.getFollowees().size()).isEqualTo(followerCount - 1);
         assertThat(user2.getFollowers().size()).isEqualTo(followeeCount - 1);
@@ -82,8 +80,8 @@ class FollowServiceTest {
 
     @Test
     void 팔로우_목록_조회() {
-        given(userService.findOne(any())).willReturn(user1);
-        FollowListDto.Request requestDto = new FollowListDto.Request(1L);
+        given(userService.findByNickname(any())).willReturn(user1);
+        FollowListDto.Request requestDto = new FollowListDto.Request(user1.getNickname());
         FollowListDto.Response followList = followService.getFollowList(requestDto);
 
         assertThat(followList.getUsers().size()).isEqualTo(2);
@@ -91,6 +89,8 @@ class FollowServiceTest {
         assertThat(followList.getUsers().get(0).getNickname()).isEqualTo(user2.getNickname());
         assertThat(followList.getUsers().get(1).getName()).isEqualTo(user3.getName());
         assertThat(followList.getUsers().get(1).getNickname()).isEqualTo(user3.getNickname());
+
+//        TODO: follow Hashtag test
 //        assertThat(followList.getHashtags().size()).isEqualTo(1);
     }
 }

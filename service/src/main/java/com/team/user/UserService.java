@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public User findOne(Long userId) {
-        return userRepository.findById(userId)
+    public User findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
     }
 }

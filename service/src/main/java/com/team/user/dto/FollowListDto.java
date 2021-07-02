@@ -13,7 +13,7 @@ public class FollowListDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class Request {
-        private Long userId;
+        private String nickname;
     }
 
     @Getter
@@ -25,16 +25,20 @@ public class FollowListDto {
 
         @Getter
         @AllArgsConstructor
+        @NoArgsConstructor(access = AccessLevel.PROTECTED)
         public static class UserInfo {
             private String name;
             private String nickname;
+            private Long followId;
         }
 
         @Getter
         @AllArgsConstructor
+        @NoArgsConstructor(access = AccessLevel.PROTECTED)
         public static class HashtagInfo {
             private String hashtag;
             private Long count; // Number of posts with hashtag
+            private Long followId;
         }
     }
 }
