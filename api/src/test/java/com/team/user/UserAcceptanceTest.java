@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -45,11 +46,14 @@ public class UserAcceptanceTest {
         User user1 = userData.saveUser("승화", "a", "a@naver.com");
         User user2 = userData.saveUser("준수", "b", "b@naver.com");
         User user3 = userData.saveUser("용우", "c", "c@naver.com");
+        User user4 = userData.saveUser("용우1", "c1", "c1@naver.com");
         Follow follow1 = followData.saveFollow(user2, user1);
         Follow follow2 = followData.saveFollow(user3, user1);
+        Follow follow3 = followData.saveFollow(user4, user1);
 
         List<FollowerInfoResponse> actual = getFollowerTest(user1.getId());
-        List<User> expected = Arrays.asList(user2, user3);
+        actual.sort(Comparator.comparingLong(FollowerInfoResponse::getUserId));
+        List<User> expected = Arrays.asList(user2, user3, user4);
         Assertions.assertThat(actual.size()).isEqualTo(expected.size());
         for(int i = 0; i < actual.size(); i++) {
             Assertions.assertThat(actual.get(i).getUserId()).isEqualTo(expected.get(i).getId());
@@ -67,7 +71,8 @@ public class UserAcceptanceTest {
         Follow follow3 = followData.saveFollow(user1, user2);
 
         List<FollowerInfoResponse> actual = getFollowerTest(user1.getId());
-        List<User> expected = Arrays.asList(user2, user3);
+        actual.sort(Comparator.comparingLong(FollowerInfoResponse::getUserId));
+        List<User> expected = Arrays.asList(user2);
         Assertions.assertThat(actual.size()).isEqualTo(2);
         for (FollowerInfoResponse followerInfoResponse : actual) {
             if (followerInfoResponse.isFollowBack()) {

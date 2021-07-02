@@ -15,7 +15,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public FollowerInfoListResult getFollowerList(FollowerInfoListCommand command) {
-        User user = userRepository.findById(command.getUserId())
+        User user = userRepository.findUserById(command.getUserId())
                 .orElseThrow(() -> new RuntimeException("일치하는 아이디가 존재하지 않습니다"));
 
         return new FollowerInfoListResult(
@@ -23,7 +23,7 @@ public class UserService {
                 .map(it -> new FollowerInfoResult(
                         it,
                         it.getFollower().getFollowers().stream()
-                                .anyMatch(f4f -> f4f.getFollower().getId().equals(user.getId()))
+                                .anyMatch(f4f -> f4f.getFollower().getId().equals(command.getUserId()))
                         )
                 )
                 .collect(Collectors.toList())
