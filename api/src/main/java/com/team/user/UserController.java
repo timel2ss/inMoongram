@@ -1,6 +1,7 @@
 package com.team.user;
 
 import com.team.user.dto.FollowListDto;
+import com.team.user.dto.FollowListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,8 @@ public class UserController {
     private final FollowService followService;
 
     @GetMapping("/{user_id}/following")
-    public ResponseEntity<FollowListDto> getFollowList(@PathVariable("user_id") Long userId) {
-        return ResponseEntity.ok(followService.getFollowList(userId));
+    public ResponseEntity<FollowListResponseDto> getFollowList(@PathVariable("user_id") Long userId) {
+        return ResponseEntity.ok(
+                new FollowListResponseDto(followService.getFollowList(userId)));
     }
 }
