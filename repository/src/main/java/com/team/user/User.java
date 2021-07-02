@@ -62,5 +62,17 @@ public class User {
         this.website = website;
         this.profileImage = profileImage;
     }
+
+    public void modifyProfile(String email, String nickname, String name,
+                              String phoneNumber, String introduction, Sex sex, String website, String profileImage){
+        this.email = email;
+        this.nickname = nickname;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.introduction = introduction;
+        this.sex = sex;
+        this.website = website;
+        this.profileImage = profileImage;
+    }
 }
 
