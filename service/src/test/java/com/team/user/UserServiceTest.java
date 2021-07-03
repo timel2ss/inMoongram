@@ -15,15 +15,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class FollowServiceTest {
+class UserServiceTest {
     @Mock
-    private FollowRepository followRepository;
-
-    @Mock
-    private UserService userService;
+    UserRepository userRepository;
 
     @InjectMocks
-    private FollowService followService;
+    UserService userService;
 
     private User user1;
     private User user2;
@@ -64,17 +61,17 @@ class FollowServiceTest {
     }
 
     @Test
-    void 팔로우_취소() {
-        given(userService.findByNickname(user1.getNickname())).willReturn(user1);
-        given(userService.findByNickname(user2.getNickname())).willReturn(user2);
-        given(followRepository.findById(any())).willReturn(Optional.of(follow1));
+    void 팔로우_목록_조회() {
+        given(userRepository.findById(any())).willReturn(Optional.of(user1));
+        FollowListOutput followList = userService.getFollowList(1L);
 
-        int followerCount = user1.getFollowees().size();
-        int followeeCount = user2.getFollowers().size();
+        assertThat(followList.getUsers().size()).isEqualTo(2);
+        assertThat(followList.getUsers().get(0).getName()).isEqualTo(user2.getName());
+        assertThat(followList.getUsers().get(0).getNickname()).isEqualTo(user2.getNickname());
+        assertThat(followList.getUsers().get(1).getName()).isEqualTo(user3.getName());
+        assertThat(followList.getUsers().get(1).getNickname()).isEqualTo(user3.getNickname());
 
-        followService.unfollow(1L);
-
-        assertThat(user1.getFollowees().size()).isEqualTo(followerCount - 1);
-        assertThat(user2.getFollowers().size()).isEqualTo(followeeCount - 1);
+//        TODO: follow Hashtag test
+//        assertThat(followList.getHashtags().size()).isEqualTo(1);
     }
 }

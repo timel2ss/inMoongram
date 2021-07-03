@@ -1,14 +1,18 @@
 package com.team.user;
 
-import com.team.user.dto.UserProfileModificationPayload;
+import com.team.exception.IdNotFoundException;
+import com.team.user.dto.input.FollowerInfoListInput;
+import com.team.user.dto.input.UserProfileModificationInput;
+import com.team.user.dto.output.FollowListOutput;
+import com.team.user.dto.output.FollowerInfoListOutput;
+import com.team.user.dto.output.FollowerInfoOutput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.team.user.dto.command.FollowerInfoListCommand;
-import com.team.user.dto.result.FollowerInfoListResult;
-import com.team.user.dto.result.FollowerInfoResult;
-import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -17,42 +21,57 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void modifyUserProfile(Long userId, UserProfileModificationPayload payload) {
+    public void modifyUserProfile(Long userId, UserProfileModificationInput payload) {
         User user = findUserById(userId);
         user.modifyProfile(payload.getEmail(), payload.getNickname(), payload.getName(),
                 payload.getPhoneNumber(), payload.getIntroduction(), payload.getSex(),
                 payload.getWebsite(), payload.getProfileImage()
         );
     }
-    
-    @Transactional
-    public FollowerInfoListResult getFollowerList(FollowerInfoListCommand command) {
-        User user = findUserById(command.getUserId());
 
-        return new FollowerInfoListResult(
+    @Transactional
+    public FollowerInfoListOutput getFollowerList(FollowerInfoListInput command) {
+        User user = userRepository.findUserById(command.getUserId()).orElseThrow(
+                IdNotFoundException::new
+        );
+
+        return new FollowerInfoListOutput(
                 user.getFollowers().stream()
-                .map(it -> new FollowerInfoResult(
-                        it,
-                        it.getFollower().getFollowers().stream()
-                                .anyMatch(f4f -> f4f.getFollower().getId().equals(command.getUserId()))
+                        .map(it -> new FollowerInfoOutput(
+                                        it,
+                                        it.getFollower().getFollowers().stream()
+                                                .anyMatch(f4f -> f4f.getFollower().getId().equals(command.getUserId()))
+                                )
                         )
-                )
-                .collect(Collectors.toList())
+                        .collect(Collectors.toList())
         );
     }
-    
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(
-                        () -> new RuntimeException("일치하는 아이디가 존재하지 않습니다.")
-                );
+
+    @Transactional(readOnly = true)
+    public FollowListOutput getFollowList(Long userId) {
+        User user = userRepository.findUserById(userId).orElseThrow(
+                IdNotFoundException::new
+        );
+        Set<Follow> followees = user.getFollowees();
+
+        List<FollowListOutput.UserInfo> userInfos = followees.stream()
+                .map(follow -> FollowListOutput.UserInfo.builder()
+                        .userId(follow.getFollowee().getId())
+                        .name(follow.getFollowee().getName())
+                        .nickname(follow.getFollowee().getNickname())
+                        .profileImage(follow.getFollowee().getProfileImage())
+                        .followId(follow.getId())
+                        .build())
+                .collect(Collectors.toCollection(ArrayList::new));
+
+//        TODO: add hashtag info
+        return new FollowListOutput(userInfos, null);
     }
-  
-    @Transactional
-    public User findById(Long id) {
-          return userRepository.findById(id)
-                  .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
-      }
+
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(IdNotFoundException::new);
+    }
 
     @Transactional
     public User findByNickname(String nickname) {

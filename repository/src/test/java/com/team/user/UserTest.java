@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -44,8 +46,8 @@ class UserTest {
                 .build();
         Follow savedFollow = followRepository.save(follow);
 
-        assertThat(user1).isEqualTo(user2.getFollowers().get(0).getFollower());
-        assertThat(user2).isEqualTo(user1.getFollowees().get(0).getFollowee());
+        assertThat(user1).isEqualTo(new ArrayList<Follow>(user2.getFollowers()).get(0).getFollower());
+        assertThat(user2).isEqualTo(new ArrayList<Follow>(user1.getFollowees()).get(0).getFollowee());
 
     }
 }

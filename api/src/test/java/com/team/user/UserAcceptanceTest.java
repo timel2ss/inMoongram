@@ -3,6 +3,8 @@ package com.team.user;
 import com.team.dbutil.DatabaseCleanup;
 import com.team.dbutil.FollowData;
 import com.team.dbutil.UserData;
+import com.team.user.dto.output.FollowListOutput;
+import com.team.user.dto.request.UserProfileModificationRequest;
 import com.team.user.dto.response.FollowerInfoListResponse;
 import com.team.user.dto.response.FollowerInfoResponse;
 import io.restassured.response.Response;
@@ -13,15 +15,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserAcceptanceTest {
+class UserAcceptanceTest {
 
     @LocalServerPort
     private int port;
@@ -55,7 +59,7 @@ public class UserAcceptanceTest {
         actual.sort(Comparator.comparingLong(FollowerInfoResponse::getUserId));
         List<User> expected = Arrays.asList(user2, user3, user4);
         Assertions.assertThat(actual.size()).isEqualTo(expected.size());
-        for(int i = 0; i < actual.size(); i++) {
+        for (int i = 0; i < actual.size(); i++) {
             Assertions.assertThat(actual.get(i).getUserId()).isEqualTo(expected.get(i).getId());
         }
     }
@@ -85,9 +89,8 @@ public class UserAcceptanceTest {
         Response response =
                 given()
                         .port(port)
-                        .param("user-id", id)
                 .when()
-                        .get("user/follower/list")
+                        .get("user/{id}/followers", id)
                 .thenReturn();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(200);
@@ -96,5 +99,83 @@ public class UserAcceptanceTest {
                 .getFollowerInfoResponses();
     }
 
+    @Test
+    void 유저정보변경_정상() {
+        User testUser = userData.saveUser("정준수", "test1", "jungjunsu@naver.com");
+        Long testUserId = testUser.getId();
 
+        var reqDto = UserProfileModificationRequest.builder()
+                .email("test@test.com")
+                .name("testuser")
+                .nickname("testspring")
+                .website("test.com")
+                .introduction("this is test")
+                .phoneNumber("010-1234-5678")
+                .profileImage("image")
+                .sex(Sex.MALE)
+                .build();
+        assertThat(testUserId).isEqualTo(1L);
+        given().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                port(port).
+                body(reqDto).
+        when().
+                patch("/user/{user_id}/profile", testUserId).
+        then().
+                statusCode(204);
+    }
+
+    @Test
+    void 유저정보변경_잘못된요청데이터() {
+        User testUser = userData.saveUser("정준수", "test1", "jungjunsu@naver.com");
+        Long testUserId = testUser.getId();
+
+        var reqDto = UserProfileModificationRequest.builder()
+                .name("testuser")
+                .nickname("testspring")
+                .website("test.com")
+                .introduction("this is test")
+                .phoneNumber("010-1234-5678")
+                .profileImage("image")
+                .sex(Sex.MALE)
+                .build();
+        assertThat(testUserId).isEqualTo(1L);
+        given().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                port(port).
+                body(reqDto).
+        when().
+                patch("/user/{user_id}/profile", testUserId).
+        then().
+                statusCode(400);
+    }
+
+    @Test
+    void 팔로우_목록_조회() {
+        User user1 = userData.saveUser("testUser1", "testNickname1", "test1@test.com");
+        User user2 = userData.saveUser("testUser2", "testNickname2", "test2@test.com");
+        User user3 = userData.saveUser("testUser3", "testNickname3", "test3@test.com");
+        Follow follow1 = followData.saveFollow(user1, user2);
+        Follow follow2 = followData.saveFollow(user1, user3);
+
+        FollowListOutput response =
+                given()
+                        .port(port)
+                        .accept("application/json")
+                        .contentType("application/json")
+                .when()
+                        .get("user/{user-id}/followings",user1.getId())
+                .then()
+                        .statusCode(200)
+                        .extract()
+                        .as(FollowListOutput.class);
+
+        assertThat(response.getUsers().size()).isEqualTo(2);
+        assertThat(response.getUsers().get(0).getName()).isEqualTo(user2.getName());
+        assertThat(response.getUsers().get(0).getNickname()).isEqualTo(user2.getNickname());
+        assertThat(response.getUsers().get(0).getFollowId()).isEqualTo(follow1.getId());
+        assertThat(response.getUsers().get(1).getName()).isEqualTo(user3.getName());
+        assertThat(response.getUsers().get(1).getNickname()).isEqualTo(user3.getNickname());
+        assertThat(response.getUsers().get(1).getFollowId()).isEqualTo(follow2.getId());
+    }
 }
