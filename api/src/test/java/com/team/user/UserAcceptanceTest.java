@@ -164,7 +164,7 @@ class UserAcceptanceTest {
                         .accept("application/json")
                         .contentType("application/json")
                 .when()
-                        .get("user/" + user1.getId() + "/followings")
+                        .get("user/{user-id}/followings",user1.getId())
                 .then()
                         .statusCode(200)
                         .extract()

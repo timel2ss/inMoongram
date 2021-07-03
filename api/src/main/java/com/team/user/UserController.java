@@ -20,13 +20,13 @@ public class UserController {
     private final FollowService followService;
 
     @GetMapping("/{user-id}/followings")
-    public ResponseEntity<FollowListResponse> getFollowList(@PathVariable("user-id") Long userId) {
+    public ResponseEntity<FollowListResponse> getFollowList(@PathVariable(name="user-id") Long userId) {
         return ResponseEntity.ok(
                 new FollowListResponse(userService.getFollowList(userId)));
     }
 
     @GetMapping("/{user-id}/followers")
-    public ResponseEntity<FollowerInfoListResponse> getFollowerList(@PathVariable("user-id") Long userId) {
+    public ResponseEntity<FollowerInfoListResponse> getFollowerList(@PathVariable(name="user-id") Long userId) {
         return ResponseEntity.ok(
                 new FollowerInfoListResponse(
                         userService.getFollowerList(new FollowerInfoListInput(userId))

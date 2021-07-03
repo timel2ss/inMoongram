@@ -31,7 +31,9 @@ public class UserService {
 
     @Transactional
     public FollowerInfoListOutput getFollowerList(FollowerInfoListInput command) {
-        User user = findUserById(command.getUserId());
+        User user = userRepository.findUserById(command.getUserId()).orElseThrow(
+                IdNotFoundException::new
+        );
 
         return new FollowerInfoListOutput(
                 user.getFollowers().stream()
@@ -47,7 +49,9 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public FollowListOutput getFollowList(Long userId) {
-        User user = findUserById(userId);
+        User user = userRepository.findUserById(userId).orElseThrow(
+                IdNotFoundException::new
+        );
         Set<Follow> followees = user.getFollowees();
 
         List<FollowListOutput.UserInfo> userInfos = followees.stream()
