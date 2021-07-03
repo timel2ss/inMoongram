@@ -1,5 +1,6 @@
-package com.team.user.dto;
+package com.team.user.dto.response;
 
+import com.team.user.dto.output.FollowListOutput;
 import lombok.*;
 
 import java.util.List;
@@ -8,11 +9,11 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class FollowListResponseDto {
+public class FollowListResponse {
     private List<UserInfoResponse> users;
     private List<HashtagInfoResponse> hashtags;
 
-    public FollowListResponseDto(FollowListDto followListDto) {
+    public FollowListResponse(FollowListOutput followListDto) {
         this.users = followListDto.getUsers()
                 .stream()
                 .map(UserInfoResponse::new)
@@ -29,7 +30,7 @@ public class FollowListResponseDto {
         private String profileImage;
         private Long followId;
 
-        public UserInfoResponse(FollowListDto.UserInfo userInfo) {
+        public UserInfoResponse(FollowListOutput.UserInfo userInfo) {
             this.userId = userInfo.getUserId();
             this.name = userInfo.getName();
             this.nickname = userInfo.getNickname();

@@ -1,6 +1,5 @@
-package com.team.user.dto;
+package com.team.user.dto.input;
 
-import com.sun.istack.NotNull;
 import com.team.user.Sex;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,10 +8,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserProfileModificationPayload {
-    @NotNull
+public class UserProfileModificationInput {
+
     private String email;
-    @NotNull
+
     private String nickname;
 
     private String name;
@@ -28,8 +27,8 @@ public class UserProfileModificationPayload {
     private String profileImage;
 
     @Builder
-    public UserProfileModificationPayload(String email, String nickname, String name, String phoneNumber,
-                                          String introduction, Sex sex, String website, String profileImage) {
+    public UserProfileModificationInput(String email, String nickname, String name, String phoneNumber,
+                                        String introduction, Sex sex, String website, String profileImage) {
         this.email = email;
         this.nickname = nickname;
         this.name = name;

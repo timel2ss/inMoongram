@@ -1,4 +1,4 @@
-package com.team.user.dto.result;
+package com.team.user.dto.output;
 
 import com.team.user.Follow;
 import com.team.user.User;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FollowerInfoResult {
+public class FollowerInfoOutput {
     private Long userId;
     private String nickName;
     private String name;
@@ -17,7 +17,7 @@ public class FollowerInfoResult {
     private boolean followBack;
 
     @Builder
-    public FollowerInfoResult(Long userId, String nickName, String name, String profileImage, boolean followBack) {
+    public FollowerInfoOutput(Long userId, String nickName, String name, String profileImage, boolean followBack) {
         this.userId = userId;
         this.nickName = nickName;
         this.name = name;
@@ -25,7 +25,7 @@ public class FollowerInfoResult {
         this.followBack = followBack;
     }
 
-    public FollowerInfoResult(Follow follow, boolean followBack) {
+    public FollowerInfoOutput(Follow follow, boolean followBack) {
         User follower = follow.getFollower();
         this.userId = follower.getId();
         this.nickName = follower.getNickname();

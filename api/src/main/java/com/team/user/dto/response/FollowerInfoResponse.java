@@ -1,6 +1,6 @@
 package com.team.user.dto.response;
 
-import com.team.user.dto.result.FollowerInfoResult;
+import com.team.user.dto.output.FollowerInfoOutput;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ public class FollowerInfoResponse {
     private String profileImage;
     private boolean followBack;
 
-    public FollowerInfoResponse(FollowerInfoResult result) {
+    public FollowerInfoResponse(FollowerInfoOutput result) {
         this.followBack = result.isFollowBack();
         this.name = result.getName();
         this.nickName = result.getNickName();

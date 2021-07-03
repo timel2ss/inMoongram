@@ -1,7 +1,6 @@
 package com.team.user.dto.response;
 
-import com.team.user.dto.result.FollowerInfoListResult;
-import com.team.user.dto.result.FollowerInfoResult;
+import com.team.user.dto.output.FollowerInfoListOutput;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +17,9 @@ public class FollowerInfoListResponse {
         this.followerInfoResponses = followerInfoResponses;
     }
 
-    public FollowerInfoListResponse(FollowerInfoListResult followerInfoListResult) {
-        this.followerInfoResponses = followerInfoListResult
-                .getFollowerInfoResultList().stream()
+    public FollowerInfoListResponse(FollowerInfoListOutput followerInfoListOutput) {
+        this.followerInfoResponses = followerInfoListOutput
+                .getFollowerInfoOutputList().stream()
                 .map(FollowerInfoResponse::new)
                 .collect(Collectors.toList());
     }

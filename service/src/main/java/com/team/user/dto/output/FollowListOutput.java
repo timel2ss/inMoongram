@@ -1,4 +1,4 @@
-package com.team.user.dto;
+package com.team.user.dto.output;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class FollowListDto {
+public class FollowListOutput {
     private List<UserInfo> users;
     private List<HashtagInfo> hashtags;
 

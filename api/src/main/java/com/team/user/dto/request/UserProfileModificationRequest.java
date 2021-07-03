@@ -1,11 +1,11 @@
-package com.team.user.dto;
+package com.team.user.dto.request;
 
 import com.team.user.Sex;
+import com.team.user.dto.input.UserProfileModificationInput;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -44,8 +44,8 @@ public class UserProfileModificationRequest {
         this.profileImage = profileImage;
     }
 
-    public static UserProfileModificationPayload toServiceDto(UserProfileModificationRequest reqDto){
-        return UserProfileModificationPayload.builder()
+    public static UserProfileModificationInput toServiceDto(UserProfileModificationRequest reqDto) {
+        return UserProfileModificationInput.builder()
                 .email(reqDto.getEmail())
                 .nickname(reqDto.getNickname())
                 .name(reqDto.getName())
