@@ -1,10 +1,9 @@
 package com.team.dbutil;
 
+import com.team.user.FollowRepository;
 import com.team.user.Sex;
 import com.team.user.User;
 import com.team.user.UserRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
