@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -43,11 +45,11 @@ public class User {
 
     // 사용자를 팔로우 하는 사람들
     @OneToMany(mappedBy = "followee")
-    private List<Follow> followers = new ArrayList<>();
+    private Set<Follow> followers = new LinkedHashSet<>();
 
     // 사용자가 팔로우 하는 사람들
     @OneToMany(mappedBy = "follower")
-    private List<Follow> followees = new ArrayList<>();
+    private Set<Follow> followees = new LinkedHashSet<>();
 
     @Builder
     public User(String email, String password, String nickname, String name,
