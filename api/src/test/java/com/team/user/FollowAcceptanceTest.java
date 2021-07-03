@@ -1,7 +1,8 @@
 package com.team.user;
 
 import com.team.dbutil.DatabaseCleanup;
-import com.team.dbutil.DatabaseInsert;
+import com.team.dbutil.FollowData;
+import com.team.dbutil.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FollowControllerTest {
+class FollowAcceptanceTest {
     @LocalServerPort
     private int port;
 
@@ -20,7 +21,10 @@ class FollowControllerTest {
     private DatabaseCleanup dbCleanup;
 
     @Autowired
-    private DatabaseInsert dbInsert;
+    private UserData userData;
+
+    @Autowired
+    private FollowData followData;
 
     private User user1;
     private User user2;
@@ -29,23 +33,9 @@ class FollowControllerTest {
 
     @BeforeEach
     void setUp() {
-        user1 = User.builder()
-                .name("testUser1")
-                .nickname("testNickname1")
-                .email("test1@test.com")
-                .password("testPassword1")
-                .build();
-        user2 = User.builder()
-                .name("testUser2")
-                .nickname("testNickname2")
-                .email("test2@test.com")
-                .password("testPassword2")
-                .build();
-
-        dbInsert.saveUser(user1);
-        dbInsert.saveUser(user2);
-
-        follow1 = dbInsert.saveFollow(user1, user2);
+        user1 = userData.saveUser("testUser1", "testNickname1", "test1@test.com");
+        user2 = userData.saveUser("testUser2", "testNickname2", "test2@test.com");
+        follow1 = followData.saveFollow(user1, user2);
     }
 
     @AfterEach
@@ -56,12 +46,12 @@ class FollowControllerTest {
     @Test
     void 팔로우_취소() {
         given()
-            .port(port)
-            .accept("application/json")
-            .contentType("application/json")
+                .port(port)
+                .accept("application/json")
+                .contentType("application/json")
         .when()
-            .delete( "follow/" + follow1.getId() + "/unfollow")
+                .delete("follow/" + follow1.getId() + "/unfollow")
         .then()
-            .statusCode(204);
+                .statusCode(204);
     }
 }
