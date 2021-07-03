@@ -46,4 +46,17 @@ public class UserService {
                 .orElseThrow(
                         () -> new RuntimeException("일치하는 아이디가 존재하지 않습니다.")
                 );
+    }
+  
+    @Transactional
+    public User findById(Long id) {
+          return userRepository.findById(id)
+                  .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+      }
+
+    @Transactional
+    public User findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+    }
 }
