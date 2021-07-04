@@ -3,6 +3,7 @@ package com.team.user;
 import com.team.dbutil.DatabaseCleanup;
 import com.team.dbutil.FollowData;
 import com.team.dbutil.UserData;
+import com.team.user.dto.request.FollowRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FollowAcceptanceTest {
@@ -53,5 +55,20 @@ class FollowAcceptanceTest {
                 .delete("follow/" + follow1.getId() + "/unfollow")
         .then()
                 .statusCode(204);
+    }
+
+    @Test
+    void 팔로우() {
+        given()
+                .port(port)
+                .accept("application/json")
+                .contentType("application/json")
+                .body(new FollowRequest(user1.getId(), user2.getId()))
+        .when()
+                .post("/follow")
+        .then()
+                .statusCode(201)
+                .body("followerId", is(user1.getId().intValue()))
+                .body("followeeId", is(user2.getId().intValue()));
     }
 }
