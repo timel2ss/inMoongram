@@ -1,5 +1,7 @@
 package com.team.user;
 
+import com.team.user.dto.input.FollowInfoInput;
+import com.team.user.dto.output.FollowInfoOutput;
 import com.team.user.dto.output.FollowListOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,12 +42,14 @@ class FollowServiceTest {
                 .email("test1@test.com")
                 .password("testPassword1")
                 .build();
+        user1.setIdForTest(1L);
         user2 = User.builder()
                 .name("testUser2")
                 .nickname("testNickname2")
                 .email("test2@test.com")
                 .password("testPassword2")
                 .build();
+        user2.setIdForTest(2L);
         user3 = User.builder()
                 .name("testUser3")
                 .nickname("testNickname3")
@@ -76,5 +80,26 @@ class FollowServiceTest {
 
         assertThat(user1.getFollowees().size()).isEqualTo(followerCount - 1);
         assertThat(user2.getFollowers().size()).isEqualTo(followeeCount - 1);
+    }
+
+    @Test
+    void 팔로우() {
+        /*
+        1.followerId와 followeeId가 들어온다
+        2.id를 가지고 user를 찾는다
+        3.id가 존재하지 않는다면 IdNotExistException을 던진다
+        4.존재한다면 Follow 인스턴스를 생성한다
+        5.Repository에 생성한 인스턴스를 저장한다
+        6.FollowInfoOuput에 담아서 반환한다
+        */
+        given(followRepository.save(any())).willReturn(follow1);
+        given(userService.findUserById(any()))
+                .willReturn(user1)
+                .willReturn(user2);
+
+        FollowInfoOutput result = followService.follow(new FollowInfoInput(1L, 2L));
+
+        assertThat(result.getFolloweeId()).isEqualTo(2L);
+        assertThat(result.getFollowerId()).isEqualTo(1L);
     }
 }

@@ -1,6 +1,8 @@
 package com.team.user;
 
 import com.team.exception.IdNotFoundException;
+import com.team.user.dto.input.FollowInfoInput;
+import com.team.user.dto.output.FollowInfoOutput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,5 +23,16 @@ public class FollowService {
         user.getFollowees().remove(follow);
         target.getFollowers().remove(follow);
         followRepository.deleteById(follow.getId());
+    }
+
+    public FollowInfoOutput follow(FollowInfoInput followInfo) {
+        User follower = userService.findUserById(followInfo.getFollowerId());
+        User followee = userService.findUserById(followInfo.getFolloweeId());
+        Follow follow = followRepository.save(Follow.builder()
+                .follower(follower)
+                .followee(followee)
+                .build());
+
+        return new FollowInfoOutput(follow);
     }
 }
