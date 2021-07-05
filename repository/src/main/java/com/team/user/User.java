@@ -55,6 +55,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<Post> postScraps = new LinkedHashSet<>();
+
     @Builder
     public User(String email, String password, String nickname, String name,
                 String phoneNumber, String introduction, Sex sex, String website, String profileImage) {
