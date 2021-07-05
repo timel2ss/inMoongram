@@ -10,13 +10,16 @@ import lombok.NoArgsConstructor;
 public class FollowInfoResponse {
     private Long followerId;
     private Long followeeId;
+    private Long followId;
 
-    public FollowInfoResponse(Long followerId, Long followeeId) {
+    public FollowInfoResponse(Long followerId, Long followeeId, Long followId) {
+        this.followId = followId;
         this.followerId = followerId;
         this.followeeId = followeeId;
     }
 
     public FollowInfoResponse(FollowInfoOutput output) {
+        this.followId = output.getFollowId();
         this.followeeId = output.getFolloweeId();
         this.followerId = output.getFollowerId();
     }

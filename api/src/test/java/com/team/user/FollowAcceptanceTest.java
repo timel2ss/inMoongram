@@ -37,7 +37,6 @@ class FollowAcceptanceTest {
     void setUp() {
         user1 = userData.saveUser("testUser1", "testNickname1", "test1@test.com");
         user2 = userData.saveUser("testUser2", "testNickname2", "test2@test.com");
-        follow1 = followData.saveFollow(user1, user2);
     }
 
     @AfterEach
@@ -47,6 +46,8 @@ class FollowAcceptanceTest {
 
     @Test
     void 팔로우_취소() {
+        follow1 = followData.saveFollow(user1, user2);
+
         given()
                 .port(port)
                 .accept("application/json")
@@ -68,6 +69,7 @@ class FollowAcceptanceTest {
                 .post("/follow")
         .then()
                 .statusCode(201)
+                .body("followId", is(1))
                 .body("followerId", is(user1.getId().intValue()))
                 .body("followeeId", is(user2.getId().intValue()));
     }
