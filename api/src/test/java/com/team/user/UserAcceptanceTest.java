@@ -18,6 +18,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -171,6 +172,9 @@ class UserAcceptanceTest {
                         .as(FollowListOutput.class);
 
         assertThat(response.getUsers().size()).isEqualTo(2);
+        List<FollowListOutput.UserInfo> actual = response.getUsers();
+        List<User> expected = Arrays.asList(user2, user3);
+        Collections.sort(actual, Comparator.comparingLong(FollowListOutput.UserInfo::getUserId));
         assertThat(response.getUsers().get(0).getName()).isEqualTo(user2.getName());
         assertThat(response.getUsers().get(0).getNickname()).isEqualTo(user2.getNickname());
         assertThat(response.getUsers().get(0).getFollowId()).isEqualTo(follow1.getId());
