@@ -69,6 +69,10 @@ public class User {
         this.profileImage = profileImage;
     }
 
+    public void setIdForTest(Long id) {
+        this.id = id;
+    }
+
     public void modifyProfile(String email, String nickname, String name,
                               String phoneNumber, String introduction, Sex sex, String website, String profileImage){
         this.email = email;

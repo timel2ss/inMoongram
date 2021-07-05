@@ -11,7 +11,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     Optional<User> findByNickname(String nickname);
 
-    @EntityGraph(attributePaths = {"followers", "followees", "followers.follower.followers","followees.followee"})
+    @EntityGraph(attributePaths = {"followers.follower.followers"})
     @Query("select u from User u where u.id = :id")
-    Optional<User> findUserById(@Param("id")Long id);
+    Optional<User> findFollowerUserById(@Param("id") Long id);
+
+    @EntityGraph(attributePaths = {"followees.followee"})
+    @Query("select u from User u where u.id = :id")
+    Optional<User> findFollowingUserById(@Param("id") Long id);
 }
