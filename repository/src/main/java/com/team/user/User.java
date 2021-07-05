@@ -1,12 +1,15 @@
 package com.team.user;
 
+import com.team.post.Post;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -48,6 +51,9 @@ public class User {
     // 사용자가 팔로우 하는 사람들
     @OneToMany(mappedBy = "follower")
     private Set<Follow> followees = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String nickname, String name,
