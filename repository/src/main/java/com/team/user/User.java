@@ -56,12 +56,18 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
+    public void addPost(Post post){
+        posts.add(post);
+    }
+
     @OneToMany(mappedBy = "user")
     private Set<PostScrap> postScraps = new LinkedHashSet<>();
 
+
     @Builder
-    public User(String email, String password, String nickname, String name,
+    public User(Long id, String email, String password, String nickname, String name,
                 String phoneNumber, String introduction, Sex sex, String website, String profileImage) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -71,10 +77,6 @@ public class User {
         this.sex = sex;
         this.website = website;
         this.profileImage = profileImage;
-    }
-
-    public void setIdForTest(Long id) {
-        this.id = id;
     }
 
     public void modifyProfile(String email, String nickname, String name,

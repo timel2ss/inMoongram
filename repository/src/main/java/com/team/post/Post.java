@@ -46,7 +46,9 @@ public class Post {
         this.content = content;
         setAuthor(user);
     }
-
+    public void setIdForTest(Long id){
+        this.id=id;
+    }
     private void setAuthor(User user){
         this.user = user;
         user.getPosts().add(this);

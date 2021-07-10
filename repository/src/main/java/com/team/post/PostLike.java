@@ -2,6 +2,7 @@ package com.team.post;
 
 import com.team.user.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,8 +24,11 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
-    public PostLike(User user, Post post) {
+    @Builder
+    public PostLike(Long id, User user, Post post) {
+        this.id = id;
         this.user = user;
         this.post = post;
+        post.addLike(this);
     }
 }
