@@ -30,38 +30,42 @@ public class Post {
     @CreatedDate
     private LocalDateTime createdAt;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<PostImage> postImages = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<PostLike> postLikes = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<PostTaggedUser> postTaggedUsers = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<PostTaggedKeyword> postTaggedKeywords = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Comment> comments = new LinkedHashSet<>();
 
     public Post(String content, User user) {
         this.content = content;
         setAuthor(user);
     }
-    public void setIdForTest(Long id){
-        this.id=id;
+
+    public void setIdForTest(Long id) {
+        this.id = id;
     }
-    private void setAuthor(User user){
+
+    private void setAuthor(User user) {
         this.user = user;
         user.getPosts().add(this);
     }
 
-    public void addLike(PostLike postLike){
+    public void addLike(PostLike postLike) {
         this.postLikes.add(postLike);
     }
 
@@ -73,14 +77,14 @@ public class Post {
         this.postTaggedKeywords.addAll(postTaggedKeywords);
     }
 
-    public void addComment(Comment comment){
+    public void addComment(Comment comment) {
         this.comments.add(comment);
     }
 
-    public void addImages(List<PostImage> postImages){
+    public void addImages(List<PostImage> postImages) {
         this.postImages.addAll(postImages);
         postImages.forEach(
-                it->it.setPost(this)
+                it -> it.setPost(this)
         );
     }
 

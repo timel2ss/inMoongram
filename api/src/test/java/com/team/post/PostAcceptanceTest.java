@@ -45,6 +45,7 @@ class PostAcceptanceTest {
     String absolutePath;
     @BeforeEach
     void setUp() {
+
         String path = "src/test/resources/images";
         absolutePath = new File(path).getAbsolutePath();
         user1 = userData.saveUser("testUser1", "testNickname1", "test1@test.com");

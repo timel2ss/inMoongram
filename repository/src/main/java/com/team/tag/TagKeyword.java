@@ -1,6 +1,7 @@
 package com.team.tag;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,11 @@ public class TagKeyword {
 
     private String keyword;
 
+    @Builder
+    public TagKeyword(Long id, String keyword) {
+        this.id = id;
+        this.keyword = keyword;
+    }
     public TagKeyword(String keyword) {
         this.keyword = keyword;
     }
