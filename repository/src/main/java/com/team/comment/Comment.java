@@ -10,6 +10,8 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,11 +34,18 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    private Set<CommentLike> commentLikes = new LinkedHashSet<>();
+
     @Builder
     public Comment(String content, User user, Post post) {
         this.content = content;
         this.user = user;
         this.post = post;
         post.addComment(this);
+    }
+
+    public void setIdForTest(Long id) {
+        this.id = id;
     }
 }
