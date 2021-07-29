@@ -88,7 +88,8 @@ public class Comment {
 
     public void deleteSubComment(Comment comment) {
         subComments.remove(comment);
-
+    }
+    
     public void setIdForTest(Long id) {
         this.id = id;
     }
