@@ -50,7 +50,7 @@ class CommentAcceptanceTest {
         postAuthor = userData.saveUser("준수", "b", "b@naver.com");
         taggedUser1 = userData.saveUser("용우", "c", "c@naver.com");
         taggedUser2 = userData.saveUser("원식", "d", "d@naver.com");
-        post = postData.savePost( postAuthor);
+        post = postData.savePost(postAuthor);
         testPostId = post.getId();
     }
 
