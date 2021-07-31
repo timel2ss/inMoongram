@@ -29,6 +29,7 @@ public class CommentLikeTest {
     private Post post;
     private Comment comment;
     private CommentLike commentLike;
+
     @BeforeEach
     void setUp() {
         user = userRepository.save(User.builder()
