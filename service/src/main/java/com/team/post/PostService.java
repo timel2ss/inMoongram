@@ -1,7 +1,6 @@
 package com.team.post;
 
 import com.team.exception.IdNotFoundException;
-
 import com.team.post.dto.input.FeedInput;
 import com.team.post.dto.input.SavePostInput;
 import com.team.post.dto.output.FeedOutput;
