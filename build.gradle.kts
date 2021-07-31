@@ -36,6 +36,8 @@ subprojects {
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         implementation("com.google.guava:guava:30.1.1-jre")
         implementation("org.springframework.boot:spring-boot-starter")
+        implementation ("org.springframework.boot:spring-boot-starter-security")
+        testImplementation ("org.springframework.security:spring-security-test")
     }
 }
 
