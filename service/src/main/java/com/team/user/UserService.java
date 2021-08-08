@@ -2,10 +2,14 @@ package com.team.user;
 
 import com.team.event.SignupEvent;
 import com.team.exception.IdNotFoundException;
+import com.team.user.dto.input.*;
 import com.team.user.dto.input.UserProfileModificationInput;
 import com.team.user.dto.output.FollowListOutput;
 import com.team.user.dto.output.FollowerInfoListOutput;
+import com.team.user.dto.output.SignupOutput;
+import com.team.user.dto.output.UserInfoOutput;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +21,36 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-    private final ApplicationEventPublisher publisher;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public SignupOutput signup(SignupInput input) {
+        if (userRepository.findByEmail(input.getEmail()).orElse(null) != null) {
+            throw new RuntimeException("이미 사용된 이메일 주소입니다.");
+        }
+        if (userRepository.findByNickname(input.getNickname()).orElse(null) != null) {
+            throw new RuntimeException("이미 존재하는 닉네임입니다.");
+        }
+
+        User saveUser = userRepository.save(
+                User.builder()
+                        .email(input.getEmail())
+                        .nickname(input.getNickname())
+                        .name(input.getName())
+                        .password(passwordEncoder.encode(input.getPassword()))
+                        .build()
+        );
+
+        return new SignupOutput(saveUser);
+    }
+
+    @Transactional
+    public UserInfoOutput getUserInfo(UserInfoInput input) {
+        User user = userRepository.findById(input.getUserId())
+                .orElseThrow(IdNotFoundException::new);
+        return new UserInfoOutput(user);
+    }
 
     @Transactional
     public void modifyUserProfile(Long userId, UserProfileModificationInput payload) {
