@@ -17,7 +17,7 @@ public class SavePostInput {
     private List<String> taggedKeywords;
 
     @Builder
-    public SavePostInput(String content, List<Long> postImageIds, List<Long> taggedUserIds, List<String> taggedKeywords) {
+    public SavePostInput(String content, List<MultipartFile> postImages, List<Long> taggedUserIds, List<String> taggedKeywords) {
         this.content = content;
         this.postImages = postImages;
         this.taggedUserIds = taggedUserIds;

@@ -25,5 +25,4 @@ public class CustomUserDetailsService implements UserDetailsService {
     private CustomUserDetail createUser(User user) {
         return CustomUserDetail.create(user);
     }
-
 }

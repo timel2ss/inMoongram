@@ -3,7 +3,6 @@ package com.team.post;
 import com.team.post.dto.output.SavePostOutput;
 import com.team.post.dto.request.SavePostRequest;
 import com.team.post.dto.response.SavePostResponse;
-import com.team.post.util.ImageUploader;
 import com.team.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,6 @@ public class PostController {
 
     @PostMapping(value = "")
     public ResponseEntity<SavePostResponse> savePost(@CurrentUser Long userId, @Valid @ModelAttribute SavePostRequest request) {
-        List<Long> postImageIds = saveImages(request);
         SavePostOutput output = postService.save(userId, request.toInput());
 
         UriComponents uriComponents = MvcUriComponentsBuilder

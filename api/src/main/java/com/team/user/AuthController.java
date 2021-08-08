@@ -1,6 +1,5 @@
 package com.team.user;
 
-import com.team.auth.AuthService;
 import com.team.security.jwt.TokenProvider;
 import com.team.user.dto.output.SignupOutput;
 import com.team.user.dto.request.LoginRequest;
@@ -24,6 +23,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import java.util.Arrays;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
