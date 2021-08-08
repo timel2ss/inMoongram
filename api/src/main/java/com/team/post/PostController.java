@@ -13,8 +13,6 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.util.UriComponents;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 
@@ -22,13 +20,12 @@ import static org.springframework.web.servlet.mvc.method.annotation.MvcUriCompon
 @RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
-    private final ImageUploader uploader;
     private final PostService postService;
 
     @PostMapping(value = "")
     public ResponseEntity<SavePostResponse> savePost(@CurrentUser Long userId, @Valid @ModelAttribute SavePostRequest request) {
         List<Long> postImageIds = saveImages(request);
-        SavePostOutput output = postService.save(userId, request.toInput(postImageIds));
+        SavePostOutput output = postService.save(userId, request.toInput());
 
         UriComponents uriComponents = MvcUriComponentsBuilder
                 .fromMethodCall(on(PostController.class).savePost(userId, request))
@@ -44,12 +41,5 @@ public class PostController {
         postService.delete(postId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
-    }
-
-    private List<Long> saveImages(SavePostRequest request) {
-        List<PostImage> postImages = uploader.storeImages(request.getPostImages());
-        return postImages.stream()
-                .map(PostImage::getId)
-                .collect(Collectors.toList());
     }
 }

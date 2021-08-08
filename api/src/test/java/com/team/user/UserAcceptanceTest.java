@@ -287,14 +287,5 @@ class UserAcceptanceTest {
                         .then()
                         .extract()
                         .as(SavePostResponse.class);
-
-        deleteTestUploadImages(absolutePath, response);
-    }
-
-    private void deleteTestUploadImages(String absolutePath, SavePostResponse response) {
-        response.getPostImages()
-                .stream()
-                .map(fileName -> new File(absolutePath + "/" + fileName))
-                .forEach(File::delete);
     }
 }

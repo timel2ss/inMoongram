@@ -40,8 +40,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest request) {
-        SignupOutput output = authService.signup(request.toInput());
-        authService.sendVerificationMail(request.getEmail(), request.getNickname());
+        SignupOutput output = userService.signup(request.toInput());
         UriComponents uriComponents = MvcUriComponentsBuilder
                 .fromMethodCall(on(AuthController.class).signup(request))
                 .build();
@@ -92,10 +91,10 @@ public class AuthController {
 
     @GetMapping("/verify/{key}")
     public ResponseEntity<String> verifyEmail(@PathVariable("key") String key) {
-        if (authService.verifyEmail(key)) {
-            // TODO 유저 권한 부여 설정
+        try {
+            authService.verifyEmail(key);
             return ResponseEntity.ok("이메일을 성공적으로 인증했습니다.");
-        } else {
+        } catch(Exception e) {
             return ResponseEntity.badRequest()
                     .body("이메일 인증에 실패했습니다.");
         }
