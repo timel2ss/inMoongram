@@ -1,17 +1,17 @@
 package com.team.config;
 
-import com.team.security.jwt.JwtAccessDeniedHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team.security.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.team.security.OAuth2AuthenticationFailureHandler;
 import com.team.security.OAuth2AuthenticationSuccessHandler;
+import com.team.security.jwt.JwtAccessDeniedHandler;
 import com.team.security.jwt.JwtAuthenticationEntryPoint;
 import com.team.security.jwt.TokenProvider;
 import com.team.util.CookieUtil;
 import com.team.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,17 +21,8 @@ import org.springframework.security.config.annotation.web.configurers.RequestCac
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.*;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.CookieRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 
@@ -47,14 +38,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper objectMapper;
     private final com.team.user.OAuth2UserService userService;
 
-
+    private static final String[] permitAllUrls = new String[]{
+            "/oauth2/login", "/login", "/signup", "/verify/**"
+    };
+    private static final String[] permitGetUrls = new String[]{
+            "/comments", "/post/{\\d+}/likes", "/search", "/user/followings", "/user/followers"
+    };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                )
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(handling -> handling
@@ -65,7 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers( "/oauth2/login", "/login", "signup", "/verify/**").permitAll()
+                        .antMatchers(permitAllUrls).permitAll()
+                        .antMatchers(HttpMethod.GET, permitGetUrls).permitAll()
                         .anyRequest().authenticated()
                 )
                 .apply(new JwtSecurityConfig(tokenProvider, redisUtil, cookieUtil))

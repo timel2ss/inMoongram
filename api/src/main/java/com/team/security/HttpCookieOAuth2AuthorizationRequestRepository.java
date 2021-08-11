@@ -1,12 +1,9 @@
 package com.team.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team.util.CookieUtil;
 import lombok.SneakyThrows;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
-import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.util.Assert;
@@ -15,9 +12,6 @@ import org.springframework.util.SerializationUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,15 +85,13 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         if (authorizationRequests.size() == 0) {
             Cookie cookie = cookieUtil.createCookie(this.cookieAttributeName, null, 0);
             response.addCookie(cookie);
-        }
-        else if (authorizationRequests.size() == 1) {
+        } else if (authorizationRequests.size() == 1) {
             String value = mapper.writeValueAsString(authorizationRequests.values().iterator().next());
             byte[] bytes = value.getBytes();
             byte[] encoded = encoder.encode(bytes);
             Cookie cookie = cookieUtil.createCookie(this.cookieAttributeName, new String(encoded), 10000);
             response.addCookie(cookie);
-        }
-        else {
+        } else {
             String value = mapper.writeValueAsString(authorizationRequests);
             byte[] bytes = value.getBytes();
             byte[] encoded = encoder.encode(bytes);
@@ -115,14 +107,14 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     private Map<String, OAuth2AuthorizationRequest> getAuthorizationRequests(HttpServletRequest request) {
         Cookie requestCookie = null;
-        for(Cookie cookie : request.getCookies()) {
-            if(cookie.getName().equals(this.cookieAttributeName)) {
+        for (Cookie cookie : request.getCookies()) {
+            if (cookie.getName().equals(this.cookieAttributeName)) {
                 requestCookie = cookie;
                 break;
             }
         }
         String cookieValue = (requestCookie != null) ? requestCookie.getValue() : null;
-        if(cookieValue == null) {
+        if (cookieValue == null) {
             return new HashMap<>();
         }
 
@@ -132,14 +124,12 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
             Map<String, OAuth2AuthorizationRequest> authorizationRequests = new HashMap<>(1);
             authorizationRequests.put(auth2AuthorizationRequest.getState(), auth2AuthorizationRequest);
             return authorizationRequests;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             try {
                 @SuppressWarnings("unchecked")
                 Map<String, OAuth2AuthorizationRequest> authorizationRequests = (Map<String, OAuth2AuthorizationRequest>) SerializationUtils.deserialize(decode);
                 return authorizationRequests;
-            }
-            catch (Exception mapEx) {
+            } catch (Exception mapEx) {
                 throw new IllegalStateException(
                         "authorizationRequests is supposed to be a Map or OAuth2AuthorizationRequest but actually is a "
                                 + cookieValue.getClass());
