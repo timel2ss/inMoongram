@@ -4,17 +4,9 @@ import com.team.security.jwt.TokenProvider;
 import com.team.user.dto.input.OAuth2SignupInput;
 import com.team.util.CookieUtil;
 import com.team.util.RedisUtil;
-import lombok.Builder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -53,10 +45,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         OAuth2User user = (OAuth2User) authentication.getPrincipal();
 
         String email = user.getAttribute("email");
-        if(!userService.findByEmail(email)) {
+        if (!userService.findByEmail(email)) {
             userService.oAuth2Signup(new OAuth2SignupInput(user.getAttributes()));
-        }
-        else {
+        } else {
             logger.debug("이미 등록된 유저입니다");
         }
 

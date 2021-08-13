@@ -18,6 +18,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestAuthProvider {
+    public static final String TEST_USER_EMAIL = "murane@naver.com";
+    public static final String TEST_USER_NAME = "정준수";
+    public static final String TEST_USER_NICKNAME = "euroTrucker";
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -28,10 +31,6 @@ public class TestAuthProvider {
     private AuthenticationManagerBuilder authenticationManagerBuilder;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
-    public static final String TEST_USER_EMAIL = "murane@naver.com";
-    public static final String TEST_USER_NAME = "정준수";
-    public static final String TEST_USER_NICKNAME = "euroTrucker";
 
     public Cookie getAccessTokenCookie(User user) {
         String accessToken = getUserAccessToken(user);

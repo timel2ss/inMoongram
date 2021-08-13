@@ -16,6 +16,9 @@ import java.util.Set;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        indexes = {@Index(name = "email_index", columnList = "email", unique = true)}
+)
 public class User {
 
     @Id
@@ -44,26 +47,23 @@ public class User {
     @Column(name = "profile_image")
     private String profileImage;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Authority authority;
-
     // 사용자를 팔로우 하는 사람들
     @OneToMany(mappedBy = "followee")
-    private Set<Follow> followers = new LinkedHashSet<>();
-
+    private final Set<Follow> followers = new LinkedHashSet<>();
     // 사용자가 팔로우 하는 사람들
     @OneToMany(mappedBy = "follower")
-    private Set<Follow> followees = new LinkedHashSet<>();
-
+    private final Set<Follow> followees = new LinkedHashSet<>();
     @OneToMany(mappedBy = "user")
-    private List<Post> posts = new ArrayList<>();
+    private final List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private final Set<PostScrap> postScraps = new LinkedHashSet<>();
 
-    public void addPost(Post post){
+    public void addPost(Post post) {
         posts.add(post);
     }
 
-    @OneToMany(mappedBy = "user")
-    private Set<PostScrap> postScraps = new LinkedHashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Authority authority;
 
 
     @Builder
@@ -82,7 +82,7 @@ public class User {
     }
 
     public void modifyProfile(String email, String nickname, String name,
-                              String phoneNumber, String introduction, Sex sex, String website, String profileImage){
+                              String phoneNumber, String introduction, Sex sex, String website, String profileImage) {
         this.email = email;
         this.nickname = nickname;
         this.name = name;

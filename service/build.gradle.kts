@@ -7,7 +7,7 @@ tasks.named("jar") {
 }
 
 dependencies {
-    api ("org.springframework.boot:spring-boot-starter-web")
-    implementation ("org.springframework.boot:spring-boot-starter-mail")
-    api ("org.springframework.boot:spring-boot-starter-web")
+    api("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    api("org.springframework.boot:spring-boot-starter-web")
 }

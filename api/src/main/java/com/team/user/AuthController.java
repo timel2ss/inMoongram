@@ -1,5 +1,6 @@
 package com.team.user;
 
+import com.team.auth.AuthService;
 import com.team.security.jwt.TokenProvider;
 import com.team.user.dto.output.SignupOutput;
 import com.team.user.dto.request.LoginRequest;
@@ -23,7 +24,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import java.util.Arrays;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest request) {
-        SignupOutput output = userService.signup(request.toInput());
+        SignupOutput output = authService.signup(request.toInput());
         UriComponents uriComponents = MvcUriComponentsBuilder
                 .fromMethodCall(on(AuthController.class).signup(request))
                 .build();
@@ -94,7 +94,7 @@ public class AuthController {
         try {
             authService.verifyEmail(key);
             return ResponseEntity.ok("이메일을 성공적으로 인증했습니다.");
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body("이메일 인증에 실패했습니다.");
         }
