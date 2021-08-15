@@ -1,11 +1,13 @@
-package com.team.security;
+package com.team.security.oauth2;
 
 import com.team.security.jwt.TokenProvider;
+import com.team.user.OAuthUserService;
 import com.team.user.dto.input.OAuth2SignupInput;
 import com.team.util.CookieUtil;
 import com.team.util.RedisUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -25,13 +27,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final RedisUtil redisUtil;
 
-    private final com.team.user.OAuth2UserService userService;
+    private final OAuthUserService userService;
+
+    @Value("${redirect.success}")
+    private String SUCCESS_REDIRECT_URL;
 
     @lombok.Builder
     public OAuth2AuthenticationSuccessHandler(TokenProvider tokenProvider,
                                               CookieUtil cookieUtil,
                                               RedisUtil redisUtil,
-                                              com.team.user.OAuth2UserService userService) {
+                                              com.team.user.OAuthUserService userService) {
         this.tokenProvider = tokenProvider;
         this.cookieUtil = cookieUtil;
         this.redisUtil = redisUtil;
@@ -63,7 +68,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
-        response.sendRedirect("http://localhost:3000");
+        response.sendRedirect(SUCCESS_REDIRECT_URL);
     }
 }
 
