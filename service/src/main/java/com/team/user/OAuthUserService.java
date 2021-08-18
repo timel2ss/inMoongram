@@ -25,7 +25,7 @@ public class OAuthUserService {
         return new SignupOutput(saved);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean findByEmail(String email) {
         return null != userRepository.findByEmail(email)
                 .orElse(null);

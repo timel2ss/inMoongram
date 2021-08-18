@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserInfoOutput getUserInfo(UserInfoInput input) {
         User user = userRepository.findById(input.getUserId())
                 .orElseThrow(IdNotFoundException::new);
@@ -36,10 +36,9 @@ public class UserService {
         );
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public FollowerInfoListOutput getFollowerList(Long userId) {
         List<Follower> followers = userRepository.findFollowerUserById(userId);
-
         return new FollowerInfoListOutput(followers, userId);
     }
 
@@ -64,20 +63,20 @@ public class UserService {
         return new FollowListOutput(userInfos, null);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public User findUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(IdNotFoundException::new);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<User> findUsersByIds(List<Long> userIds) {
         return userIds.stream()
                 .map(this::findUserById)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public User findByNickname(String nickname) {
         return userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));

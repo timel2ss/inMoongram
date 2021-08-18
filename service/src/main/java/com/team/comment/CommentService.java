@@ -50,7 +50,7 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CommentInfoOutput> getComments(Long postId) {
         Post post = postService.findPostById(postId);
         Set<Comment> comments = post.getComments();
@@ -58,6 +58,12 @@ public class CommentService {
                 .filter(it -> it.getSuperComment() == null)
                 .map(CommentInfoOutput::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Comment findCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(IdNotFoundException::new);
     }
 
     private Comment getSuperComment(CommentSaveInput input) {
@@ -78,10 +84,5 @@ public class CommentService {
         var taggedKeyswords =
                 commentTaggedKeywordService.tagAllKeywords(comment, input.getCommentTaggedKeywords());
         comment.addAllTaggedKeywords(taggedKeyswords);
-    }
-
-    public Comment findCommentById(Long commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(IdNotFoundException::new);
     }
 }
