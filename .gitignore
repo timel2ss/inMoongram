@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 .DS_Store
 **/src/main/generated
+api/src/main/resources/application-release.yml
 
 
 ### STS ###

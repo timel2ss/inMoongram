@@ -13,7 +13,8 @@ dependencies {
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     api("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtimeOnly("com.h2database:h2")
+//    runtimeOnly("com.h2database:h2")
+    implementation("mysql:mysql-connector-java")
     api("org.springframework.boot:spring-boot-starter-data-redis")
 }
 
