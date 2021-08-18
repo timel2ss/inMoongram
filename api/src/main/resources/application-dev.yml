@@ -28,13 +28,11 @@ spring:
     import:
       classpath:application-oauth2.yml
 
-
-app:
-  file:
-    dir: src/test/resources/images
-  auth:
-    secret: WTB1X2M0bnRfTDBva190aDFzX3NlY3IzdF9LM3lfUjFnaHQ/MTIzMjEwMTAxMTAxMjEyMTIxMzEzMTMxMzEzMQ==
-    expiretime: 864000000
+file:
+  dir: src/test/resources/images
+auth:
+  secret: WTB1X2M0bnRfTDBva190aDFzX3NlY3IzdF9LM3lfUjFnaHQ/MTIzMjEwMTAxMTAxMjEyMTIxMzEzMTMxMzEzMQ==
+  expiretime: 864000000
 
 redirect:
   success: http://localhost:3000/
