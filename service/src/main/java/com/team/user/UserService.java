@@ -30,10 +30,17 @@ public class UserService {
     @Transactional
     public void modifyUserProfile(Long userId, UserProfileModificationInput payload) {
         User user = findUserById(userId);
-        user.modifyProfile(payload.getEmail(), payload.getNickname(), payload.getName(),
-                payload.getPhoneNumber(), payload.getIntroduction(), payload.getSex(),
-                payload.getWebsite(), payload.getProfileImage()
-        );
+        User modification = User.builder()
+                .email(payload.getEmail())
+                .nickname(payload.getNickname())
+                .name(payload.getName())
+                .phoneNumber(payload.getPhoneNumber())
+                .introduction(payload.getIntroduction())
+                .sex(payload.getSex())
+                .website(payload.getWebsite())
+                .profileImage(payload.getProfileImage())
+                .build();
+        user.modifyProfile(modification);
     }
 
     @Transactional(readOnly = true)

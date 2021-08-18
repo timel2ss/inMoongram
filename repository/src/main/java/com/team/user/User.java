@@ -81,16 +81,15 @@ public class User {
         this.profileImage = profileImage;
     }
 
-    public void modifyProfile(String email, String nickname, String name,
-                              String phoneNumber, String introduction, Sex sex, String website, String profileImage) {
-        this.email = email;
-        this.nickname = nickname;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.introduction = introduction;
-        this.sex = sex;
-        this.website = website;
-        this.profileImage = profileImage;
+    public void modifyProfile(User modification) {
+        this.email = modification.getEmail();
+        this.nickname = modification.getNickname();
+        this.name = modification.getName();
+        this.phoneNumber = modification.getPhoneNumber();
+        this.introduction = modification.getIntroduction();
+        this.sex = modification.getSex();
+        this.website = modification.getWebsite();
+        this.profileImage = modification.getProfileImage();
     }
 
     public void modifyRole(UserRole role) {
