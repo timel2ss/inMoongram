@@ -39,6 +39,7 @@ public class PostService {
         return new SavePostOutput(savePost);
     }
 
+    @Transactional(readOnly = true)
     public PostGetOutput getPost(PostGetInput input) {
         Post post = postRepository.getPostById(input.getPostId())
                 .orElseThrow(IdNotFoundException::new);
@@ -46,6 +47,7 @@ public class PostService {
         return new PostGetOutput(post);
     }
 
+    @Transactional(readOnly = true)
     public FeedOutput getFeed(FeedInput input) {
         List<Post> feed = postRepository.getFeed(input.getUserId(), input.of());
         return new FeedOutput(feed);
@@ -58,6 +60,7 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    @Transactional(readOnly = true)
     public Post findPostById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(IdNotFoundException::new);
