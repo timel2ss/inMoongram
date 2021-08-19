@@ -1,13 +1,13 @@
 package com.team.security.jwt;
 
 import com.team.auth.CustomUserDetailsService;
-import com.team.config.AppProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,17 +25,14 @@ public class TokenProvider {
     public static final long ACCESS_TOKEN_VALID_TIME = 1 * 60 * 30 * 1000L; // 30 minutes
     public static final long REFRESH_TOKEN_VALID_TIME = 1 * 60 * 60 * 24 * 14 * 1000L; // 2 weeks
     private final CustomUserDetailsService customUserDetailsService;
-    private final AppProperties properties;
 
+    @Value("${auth.secret}")
+    private String secret;
     private Key key;
 
-    public String getSecret() {
-        return properties.getAuth().getSecret();
-    }
-
     @PostConstruct
-    public void afterPropertiesSet() throws Exception {
-        byte[] keyBytes = Decoders.BASE64.decode(getSecret());
+    public void afterPropertiesSet() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 

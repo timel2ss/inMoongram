@@ -23,7 +23,7 @@ public class SearchService {
     private final PostTaggedKeywordRepository postTaggedKeywordRepository;
     private final SearchQueryRepository searchQueryRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public SearchOutput search(String keyword) {
         if (keyword.startsWith("#")) {
             return new SearchOutput(searchPostTagKeyword(keyword), null);
@@ -34,6 +34,7 @@ public class SearchService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<PostSearchInfo> searchPostTagKeyword(String keyword) {
         List<PostSearch> results = searchQueryRepository.findPostTaggedKeywordByKeyword(keyword);
         return results.stream()
@@ -41,6 +42,7 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<UserSearchInfo> searchUser(String keyword) {
         List<UserSearch> results = searchQueryRepository.findUsersByKeyword(keyword);
         return results.stream()

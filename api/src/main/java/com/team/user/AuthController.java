@@ -51,27 +51,17 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request,
                                                HttpServletResponse httpResponse) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+        Authentication authentication = authenticate(request);
 
-        Authentication authentication = authenticationManagerBuilder.getObject()
-                .authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Cookie accessTokenCookie = createTokenCookie(authentication, "accessToken", TokenProvider.ACCESS_TOKEN_VALID_TIME );
+        Cookie refreshTokenCookie = createTokenCookie(authentication, "refreshToken", TokenProvider.REFRESH_TOKEN_VALID_TIME);
 
-        String accessToken = tokenProvider.createAccessToken(authentication);
-        long accessTokenExpireTimeInSeconds = TokenProvider.ACCESS_TOKEN_VALID_TIME / 1000;
-        Cookie accessTokenCookie = cookieUtil.createCookie("accessToken", accessToken, accessTokenExpireTimeInSeconds);
-
-        String refreshToken = tokenProvider.createRefreshToken(authentication);
         long refreshTokenExpireTimeInSeconds = TokenProvider.REFRESH_TOKEN_VALID_TIME / 1000;
-        Cookie refreshTokenCookie = cookieUtil.createCookie("refreshToken", refreshToken, refreshTokenExpireTimeInSeconds);
-
-        redisUtil.setDataExpire(refreshToken, request.getEmail(), refreshTokenExpireTimeInSeconds);
+        redisUtil.setDataExpire(refreshTokenCookie.getValue(), request.getEmail(), refreshTokenExpireTimeInSeconds);
 
         httpResponse.addCookie(accessTokenCookie);
         httpResponse.addCookie(refreshTokenCookie);
-
-        return ResponseEntity.ok(new LoginResponse(accessToken));
+        return ResponseEntity.ok(new LoginResponse(accessTokenCookie.getValue()));
     }
 
     @PostMapping("/signout")
@@ -98,6 +88,31 @@ public class AuthController {
             return ResponseEntity.badRequest()
                     .body("이메일 인증에 실패했습니다.");
         }
+    }
+
+    /**
+     * @param tokenValidTime (millisecond)
+     */
+    private Cookie createTokenCookie(Authentication authentication, String tokenName, long tokenValidTime) {
+        if (tokenName.equals("accessToken")) {
+            String accessToken = tokenProvider.createAccessToken(authentication);
+            long accessTokenExpireTimeInSeconds = tokenValidTime / 1000;
+            return cookieUtil.createCookie(tokenName, accessToken, accessTokenExpireTimeInSeconds);
+        } else { // create refreshToken
+            String refreshToken = tokenProvider.createRefreshToken(authentication);
+            long refreshTokenExpireTimeInSeconds = tokenValidTime / 1000;
+            return cookieUtil.createCookie(tokenName, refreshToken, refreshTokenExpireTimeInSeconds);
+        }
+    }
+
+    private Authentication authenticate(LoginRequest request) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+
+        Authentication authentication = authenticationManagerBuilder.getObject()
+                .authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 
     private void expireTokenCookie(HttpServletResponse httpResponse, String cookieName) {

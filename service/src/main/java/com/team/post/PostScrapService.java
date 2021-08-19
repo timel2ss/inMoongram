@@ -30,7 +30,7 @@ public class PostScrapService {
         return new PostScrapSaveOutput(saved.getId());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PostScrapGetOutput getScrap(PostScrapGetInput input) {
         return new PostScrapGetOutput(
                 postScrapRepository.findAllByUserId(input.getUserId()).stream()
@@ -39,6 +39,7 @@ public class PostScrapService {
         );
     }
 
+    @Transactional
     public void unScrap(PostScrapDeleteInput input) {
         PostScrap postScrap = postScrapRepository.findByUserIdAndPostId(input.getUserId(), input.getPostId())
                 .orElseThrow(IdNotFoundException::new);
