@@ -60,7 +60,7 @@ public class UserController {
 
     @GetMapping("/feed")
     public ResponseEntity<FeedResponse> getFeed(@CurrentUser Long userId,
-                                                @Valid @Positive @RequestParam("page-no") int page) {
+                                                @Valid @Positive @RequestParam(value = "page-no", defaultValue = "1") int page) {
         FeedOutput output = postService.getFeed(new FeedInput(userId, page));
         return ResponseEntity.ok(new FeedResponse(output));
     }

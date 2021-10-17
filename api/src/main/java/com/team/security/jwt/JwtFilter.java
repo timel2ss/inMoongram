@@ -34,42 +34,27 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        String accessToken = null;
+        String accessToken = getTokenFromCookie(request, "accessToken");
         String refreshToken = null;
-
-        Cookie accessTokenCookie = cookieUtil.getCookie(request, "accessToken");
-        if (accessTokenCookie != null) {
-            accessToken = accessTokenCookie.getValue();
-        }
 
         try {
             if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken)) {
-                Authentication authentication = tokenProvider.getAuthentication(accessToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                Authentication authentication = getAuthenticationFromToken(accessToken);
                 log.info("Security Context에 '{}' 인증 정보를 저장했습니다. URI: {}", authentication.getName(), requestURI);
             } else {
                 log.info("유효한 액세스 토큰이 없습니다. URI: {}", requestURI);
             }
         } catch (ExpiredJwtException e) {
-            Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
-            if (refreshTokenCookie != null) {
-               refreshToken = refreshTokenCookie.getValue();
-            }
+            refreshToken = getTokenFromCookie(request, "refreshToken");
         }
 
         try {
             if (refreshToken != null) {
                 log.info("액세스 토큰을 재발급합니다. URI: {}", requestURI);
                 String data = redisUtil.getData(refreshToken);
-
                 if (data.equals(tokenProvider.getUsername(refreshToken))) {
-                    Authentication authentication = tokenProvider.getAuthentication(refreshToken);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                    String newAccessToken = tokenProvider.createAccessToken(authentication);
-
-                    long accessTokenExpireTimeInSeconds = TokenProvider.ACCESS_TOKEN_VALID_TIME / 1000;
-                    Cookie newAccessTokenCookie = cookieUtil.createCookie("accessToken", newAccessToken, accessTokenExpireTimeInSeconds);
+                    Authentication authentication = getAuthenticationFromToken(refreshToken);
+                    Cookie newAccessTokenCookie = createNewAccessTokenCookie(authentication);
                     response.addCookie(newAccessTokenCookie);
                 }
             }
@@ -78,5 +63,25 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private Cookie createNewAccessTokenCookie(Authentication authentication) {
+        String newAccessToken = tokenProvider.createAccessToken(authentication);
+        long accessTokenExpireTimeInSeconds = TokenProvider.ACCESS_TOKEN_VALID_TIME / 1000;
+        return cookieUtil.createCookie("accessToken", newAccessToken, accessTokenExpireTimeInSeconds);
+    }
+
+    private Authentication getAuthenticationFromToken(String token) {
+        Authentication authentication = tokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
+    }
+
+    private String getTokenFromCookie(HttpServletRequest request, String cookieName) {
+        Cookie tokenCookie = cookieUtil.getCookie(request, cookieName);
+        if (tokenCookie != null) {
+            return tokenCookie.getValue();
+        }
+        return null;
     }
 }
